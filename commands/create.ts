@@ -56,9 +56,12 @@ export = {
         }
         fs.writeFileSync(path.resolve('sounds/map.json'), JSON.stringify(map));
         const rows: ActionRowBuilder<ButtonBuilder>[] = [];
-        for (let i = 0; i < Math.ceil(map.length / 5); i++) {
+        for (let i = 0; i < Math.ceil(Object.keys(map).length / 5); i++) {
           const buttons = new ActionRowBuilder<ButtonBuilder>();
-          for (const sound of Object.keys(map)) {
+          const sounds = Object.keys(map);
+          for (let j = 0; j < 5; j++) {
+            const sound = sounds[j + i * 5];
+            if (!sound) continue;
             const button = createButton(sound, map[sound].emoji);
             buttons.addComponents(button);
           }
