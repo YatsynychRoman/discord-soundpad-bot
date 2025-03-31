@@ -36,6 +36,9 @@ export = {
     await interaction.deferReply();
     const file = interaction.options.getAttachment('file')!;
     const name = interaction.options.get('name')!.value as string;
+    if (name.includes('@')) {
+      await interaction.followUp({ content: 'Не можна використовувати символ @ у назві', flags: MessageFlagsBitField.Flags.Ephemeral });
+    }
     const emoji = interaction.options.get('emoji')?.value as string | undefined;
 
     const map = JSON.parse(fs.readFileSync(path.resolve('sounds/map.json'), 'utf8'));

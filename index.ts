@@ -8,9 +8,10 @@ import {
 import { Player } from 'discord-player';
 import { AttachmentExtractor } from '@discord-player/extractor';
 import fs from 'fs';
+import path from 'node:path';
 import 'dotenv/config'
 import playSound from './services/playSound';
-import path from 'node:path';
+import deleteSound from './services/deleteSound';
 
 const intents = new IntentsBitField();
 intents.add(
@@ -60,6 +61,9 @@ client.on('messageCreate', async message => {
 
 client.on('interactionCreate', async (interaction: ChatInputCommandInteraction | ButtonInteraction) => {
   if (interaction instanceof ButtonInteraction) {
+    if (interaction.customId.includes('delete@')) {
+      await deleteSound(interaction);
+    }
     await playSound(interaction);
     return;
   }
