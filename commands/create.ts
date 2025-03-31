@@ -29,6 +29,7 @@ export = {
       name: 'emoji',
       type: ApplicationCommandOptionType.String,
       description: 'Emoji',
+      required: true,
     },
   ],
   execute: async (interaction: ChatInputCommandInteraction) => {
