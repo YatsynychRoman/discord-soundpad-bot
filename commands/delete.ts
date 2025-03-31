@@ -14,7 +14,7 @@ export = {
     const buttons = new ActionRowBuilder<ButtonBuilder>();
     for (const sound of Object.keys(map)) {
 
-      const button = createButton(`delete@${sound}@${message.id}`, map[sound].emoji);
+      const button = createButton(`delete@${sound}@${message.id}`, map[sound].emoji, true);
       buttons.addComponents(button);
     }
 
