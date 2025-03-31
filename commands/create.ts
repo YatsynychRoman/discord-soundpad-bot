@@ -62,7 +62,7 @@ export = {
           buttons.addComponents(button);
         }
 
-        const messageId = global.getSoundPadMessageId();
+        const messageId = await global.getSoundPadMessageId();
 
         // @ts-ignore
         await (await interaction.channel.messages.fetch(messageId)).delete()

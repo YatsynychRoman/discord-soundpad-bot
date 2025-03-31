@@ -16,8 +16,8 @@ const deleteSound = async (interaction: ButtonInteraction) => {
     buttons.addComponents(button);
   }
 
-  const soundPadMessageId = global.getSoundPadMessageId();
-
+  const soundPadMessageId = await global.getSoundPadMessageId();
+  console.log(soundPadMessageId);
   // @ts-ignore
   await (await interaction.channel.messages.fetch(soundPadMessageId)).delete()
   await interaction.followUp({ content: 'Sound Pad' , components: [buttons] });
