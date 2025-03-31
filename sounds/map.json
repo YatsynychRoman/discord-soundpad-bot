@@ -2,5 +2,17 @@
   "pipe": {
     "emoji": "😏",
     "fileName": "pipe.mp3"
+  },
+  "scream": {
+    "emoji": "628668719232450607",
+    "fileName": "scream.mp3"
+  },
+  "amogus": {
+    "emoji": "932457587490820096",
+    "fileName": "amogus.mp3"
+  },
+  "bogos binted": {
+    "emoji": "\uD83D\uDC7D",
+    "fileName": "bogos binted.mp3"
   }
 }

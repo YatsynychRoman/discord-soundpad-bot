@@ -4,9 +4,10 @@ import path from 'node:path';
 import createButton from './createButton';
 
 const deleteSound = async (interaction: ButtonInteraction) => {
+  await interaction.deferReply();
   const [_prefix, soundName, messageId] = interaction.customId.split('@');
   // @ts-ignore
-  (await interaction.channel.messages.fetch(messageId)).delete();
+  await (await interaction.channel.messages.fetch(messageId)).delete();
   const map = JSON.parse(fs.readFileSync(path.resolve('sounds/map.json'), 'utf-8'));
   delete map[soundName as string];
   const buttons = new ActionRowBuilder<ButtonBuilder>();
@@ -15,16 +16,13 @@ const deleteSound = async (interaction: ButtonInteraction) => {
     buttons.addComponents(button);
   }
 
-  const messageFilePath = path.resolve('lastSoundPadMessage');
-  const soundPadMessageId = fs.readFileSync(messageFilePath, 'utf8');
+  const soundPadMessageId = global.getSoundPadMessageId();
 
   // @ts-ignore
-  (await interaction.channel.messages.fetch(soundPadMessageId)).delete()
+  await (await interaction.channel.messages.fetch(soundPadMessageId)).delete()
   await interaction.followUp({ content: 'Sound Pad' , components: [buttons] });
-  const message = await interaction.fetchReply();
 
   fs.writeFileSync(path.resolve('sounds/map.json'), JSON.stringify(map));
-  fs.writeFileSync(messageFilePath, message.id);
 }
 
 export default deleteSound;

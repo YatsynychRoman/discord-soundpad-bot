@@ -62,15 +62,11 @@ export = {
           buttons.addComponents(button);
         }
 
-        const messageFilePath = path.resolve('lastSoundPadMessage');
-        const messageId = fs.readFileSync(messageFilePath, 'utf8');
+        const messageId = global.getSoundPadMessageId();
 
         // @ts-ignore
-        (await interaction.channel.messages.fetch(messageId)).delete()
+        await (await interaction.channel.messages.fetch(messageId)).delete()
         await interaction.followUp({ content: 'Sound Pad' , components: [buttons] });
-        const message = await interaction.fetchReply();
-
-        fs.writeFileSync(messageFilePath, message.id);
       });
     });
   }

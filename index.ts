@@ -1,17 +1,19 @@
+import fs from 'fs';
 import {
   ButtonInteraction,
   ChatInputCommandInteraction,
   Client,
   IntentsBitField,
-  Collection, MessageFlagsBitField
+  Collection,
 } from 'discord.js';
 import { Player } from 'discord-player';
 import { AttachmentExtractor } from '@discord-player/extractor';
-import fs from 'fs';
-import path from 'node:path';
+
 import 'dotenv/config'
+
 import playSound from './services/playSound';
 import deleteSound from './services/deleteSound';
+import getSoundPadMessageIdFactory from './utils/getSoundPadMessageId';
 
 const intents = new IntentsBitField();
 intents.add(
@@ -24,7 +26,13 @@ const client: Client & { commands: Collection<unknown, unknown> } = new Client({
 client.commands = new Collection();
 
 // change to ./commands when developing locally
-const commandFiles = fs.readdirSync('./dist/commands').filter(file => file.endsWith('.ts') || file.endsWith('.js'));
+const commandFiles = fs
+  .readdirSync(
+    process.env.ENVIRONMENT === 'prod' ? './dist/commands' : './commands',
+  )
+  .filter(
+    file => process.env.ENVIRONMENT === 'prod' ? file.endsWith('.js') : file.endsWith('.ts'),
+  );
 
 for (const file of commandFiles) {
   const command = require('./commands/' + file);
@@ -63,6 +71,7 @@ client.on('interactionCreate', async (interaction: ChatInputCommandInteraction |
   if (interaction instanceof ButtonInteraction) {
     if (interaction.customId.includes('delete@')) {
       await deleteSound(interaction);
+      return;
     }
     await playSound(interaction);
     return;
@@ -78,5 +87,9 @@ client.on('interactionCreate', async (interaction: ChatInputCommandInteraction |
     });
   }
 });
-console.log(fs.readFileSync(path.resolve('lastSoundPadMessage'), 'utf8'))
-client.login(process.env.DISCORD_BOT_TOKEN).then(async () => console.log('Logged in'));
+
+client.login(process.env.DISCORD_BOT_TOKEN).then(() => {
+  global.getSoundPadMessageId = getSoundPadMessageIdFactory(client);
+  console.log('Logged in');
+});
+
