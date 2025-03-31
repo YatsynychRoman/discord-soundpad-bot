@@ -12,7 +12,15 @@
     "fileName": "amogus.mp3"
   },
   "bogos binted": {
-    "emoji": "\uD83D\uDC7D",
+    "emoji": "👽",
     "fileName": "bogos binted.mp3"
+  },
+  "Nazar": {
+    "emoji": "🦈",
+    "fileName": "Nazar.mp3"
+  },
+  "trikitrakatelas": {
+    "emoji": "🌵",
+    "fileName": "trikitrakatelas.mp3"
   }
 }

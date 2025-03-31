@@ -55,18 +55,21 @@ export = {
           fileName: `${name}.${format}`,
         }
         fs.writeFileSync(path.resolve('sounds/map.json'), JSON.stringify(map));
-
-        const buttons = new ActionRowBuilder<ButtonBuilder>();
-        for (const sound of Object.keys(map)) {
-          const button = createButton(sound, map[sound].emoji);
-          buttons.addComponents(button);
+        const rows: ActionRowBuilder<ButtonBuilder>[] = [];
+        for (let i = 0; i < Math.ceil(map.length / 5); i++) {
+          const buttons = new ActionRowBuilder<ButtonBuilder>();
+          for (const sound of Object.keys(map)) {
+            const button = createButton(sound, map[sound].emoji);
+            buttons.addComponents(button);
+          }
+          rows.push(buttons);
         }
-
+        console.log(rows)
         const messageId = await global.getSoundPadMessageId();
 
         // @ts-ignore
         await (await interaction.channel.messages.fetch(messageId)).delete()
-        await interaction.followUp({ content: 'Sound Pad' , components: [buttons] });
+        await interaction.followUp({ content: 'Sound Pad' , components: rows });
       });
     });
   }
