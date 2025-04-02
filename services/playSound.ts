@@ -33,8 +33,6 @@ const playSound = async (interaction: ButtonInteraction) => {
       return;
     }
 
-    await interaction.deferReply();
-
     const player = useMainPlayer();
     const soundName = interaction.customId;
     const map = JSON.parse(fs.readFileSync(path.resolve(`sounds/map.json`), 'utf8'));
@@ -69,8 +67,7 @@ const playSound = async (interaction: ButtonInteraction) => {
       searchEngine: QueryType.FILE
     });
 
-    await interaction.followUp({ content: '.', flags: MessageFlagsBitField.Flags.Ephemeral });
-    await interaction.deleteReply();
+    await interaction.update({ content: '.' });
   } catch (e) {
     console.log(e);
     await interaction.followUp({
