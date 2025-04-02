@@ -67,7 +67,7 @@ const playSound = async (interaction: ButtonInteraction) => {
       searchEngine: QueryType.FILE
     });
 
-    await interaction.update({ content: '.' });
+    await interaction.update({ content: 'Sound Pad' });
   } catch (e) {
     console.log(e);
     await interaction.followUp({
