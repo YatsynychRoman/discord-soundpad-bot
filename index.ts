@@ -55,6 +55,40 @@ client.on('messageCreate', async message => {
   if (message.author.bot || !message.guild) return;
   if (!client.application?.owner) await client.application?.fetch();
 
+  if (message.content === '!init' && message.author.id === client.application?.owner?.id) {
+    await message.guild.commands
+      .set(client.commands as any)
+      .then(() => {
+        message.reply('Deployed!');
+      })
+      .catch(err => {
+        message.reply('Could not deploy commands! Make sure the bot has the application.commands permission!');
+        console.error(err);
+      });
+  }
+});
+
+client.on('interactionCreate', async (interaction: ChatInputCommandInteraction | ButtonInteraction) => {
+  if (interaction instanceof ButtonInteraction) {
+    if (interaction.customId.includes('delete@')) {
+      await deleteSound(interaction);
+      return;
+    }
+    await playSound(interaction);
+    return;
+  }
+  const command = client.commands.get(interaction.commandName.toLowerCase()) as any;
+
+  try {
+    command.execute(interaction);
+  } catch (error) {
+    console.error(error);
+    await interaction.followUp({
+      content: 'There was an error trying to execute that command!',
+    });
+  }
+});
+
 client.on('voiceStateUpdate', async (oldState, newState) => {
   if (oldState.member?.user.bot) {
     return;
