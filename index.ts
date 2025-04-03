@@ -6,7 +6,7 @@ import {
   IntentsBitField,
   Collection,
 } from 'discord.js';
-import { Player } from 'discord-player';
+import { Player, QueryType, useMainPlayer } from 'discord-player';
 import { AttachmentExtractor } from '@discord-player/extractor';
 
 import 'dotenv/config'
@@ -14,6 +14,7 @@ import 'dotenv/config'
 import playSound from './services/playSound';
 import deleteSound from './services/deleteSound';
 import getSoundPadMessageIdFactory from './utils/getSoundPadMessageId';
+import path from 'node:path';
 
 const intents = new IntentsBitField();
 intents.add(
@@ -54,36 +55,18 @@ client.on('messageCreate', async message => {
   if (message.author.bot || !message.guild) return;
   if (!client.application?.owner) await client.application?.fetch();
 
-  if (message.content === '!init' && message.author.id === client.application?.owner?.id) {
-    await message.guild.commands
-      .set(client.commands as any)
-      .then(() => {
-        message.reply('Deployed!');
-      })
-      .catch(err => {
-        message.reply('Could not deploy commands! Make sure the bot has the application.commands permission!');
-        console.error(err);
-      });
-  }
-});
-
-client.on('interactionCreate', async (interaction: ChatInputCommandInteraction | ButtonInteraction) => {
-  if (interaction instanceof ButtonInteraction) {
-    if (interaction.customId.includes('delete@')) {
-      await deleteSound(interaction);
-      return;
-    }
-    await playSound(interaction);
+client.on('voiceStateUpdate', async (oldState, newState) => {
+  if (oldState.member?.user.bot) {
     return;
   }
-  const command = client.commands.get(interaction.commandName.toLowerCase()) as any;
+  const player = useMainPlayer();
 
-  try {
-    command.execute(interaction);
-  } catch (error) {
-    console.error(error);
-    await interaction.followUp({
-      content: 'There was an error trying to execute that command!',
+  if (newState.channelId) {
+    await player.play(newState.channelId, path.join(__dirname, 'sounds/pipe.mp3'), {
+      nodeOptions: {
+        leaveOnEnd: true,
+      },
+      searchEngine: QueryType.FILE,
     });
   }
 });
