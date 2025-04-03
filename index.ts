@@ -89,22 +89,6 @@ client.on('interactionCreate', async (interaction: ChatInputCommandInteraction |
   }
 });
 
-client.on('voiceStateUpdate', async (oldState, newState) => {
-  if (oldState.member?.user.bot) {
-    return;
-  }
-  const player = useMainPlayer();
-
-  if (newState.channelId) {
-    await player.play(newState.channelId, path.join(__dirname, 'sounds/pipe.mp3'), {
-      nodeOptions: {
-        leaveOnEnd: true,
-      },
-      searchEngine: QueryType.FILE,
-    });
-  }
-});
-
 client.login(process.env.DISCORD_BOT_TOKEN).then(() => {
   global.getSoundPadMessageId = getSoundPadMessageIdFactory(client);
   console.log('Logged in');
